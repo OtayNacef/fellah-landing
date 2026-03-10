@@ -1,392 +1,223 @@
-const APP_URL = "https://app.fellah.tn";
+"use client";
 
-const REGIONS = [
-  "Tunis", "Ariana", "Ben Arous", "Manouba", "Nabeul", "Zaghouan",
-  "Bizerte", "Béja", "Jendouba", "Kef", "Siliana", "Sousse",
-  "Monastir", "Mahdia", "Sfax", "Kairouan", "Kasserine", "Sidi Bouzid",
-  "Gabès", "Medenine", "Tataouine", "Gafsa", "Tozeur", "Kébili",
-];
+import { useEffect, useState } from "react";
+import Script from "next/script";
 
-const FEATURES = [
-  {
-    icon: "🌾",
-    title: "Prix du Marché en Temps Réel",
-    desc: "Consultez les prix de gros pour 8 types de cultures. Arrêtez de vendre à l'aveugle aux intermédiaires.",
-  },
-  {
-    icon: "🔬",
-    title: "Diagnostic IA des Cultures",
-    desc: "Photographiez votre récolte. L'IA identifie les maladies et vous donne un plan de traitement en arabe ou français.",
-  },
-  {
-    icon: "🛒",
-    title: "Marché Direct",
-    desc: "Publiez vos annonces, recevez des appels directs des acheteurs. Zéro commission. Contact par téléphone ou WhatsApp.",
-  },
-  {
-    icon: "💬",
-    title: "Conseiller IA Agricole",
-    desc: "Posez vos questions en arabe ou français. L'IA répond avec des conseils adaptés aux conditions tunisiennes.",
-  },
-];
+export default function LaunchingSoonPage() {
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
 
-const STEPS = [
-  {
-    num: "1",
-    title: "Créez votre compte",
-    desc: "Inscription gratuite en 2 minutes. Renseignez votre région et vos cultures.",
-  },
-  {
-    num: "2",
-    title: "Gérez votre ferme",
-    desc: "Ajoutez vos parcelles, suivez vos récoltes, consultez les prix du marché.",
-  },
-  {
-    num: "3",
-    title: "Vendez directement",
-    desc: "Publiez vos produits sur le marché. Les acheteurs vous contactent directement.",
-  },
-];
+  // Countdown to April 1, 2026
+  const target = new Date("2026-04-01T00:00:00Z").getTime();
+  const [timeLeft, setTimeLeft] = useState({ d: 0, h: 0, m: 0, s: 0 });
 
-const PLANS = [
-  {
-    name: "Gratuit",
-    price: "0",
-    unit: "TND",
-    highlight: false,
-    features: [
-      "5 scans IA / jour",
-      "3 annonces actives",
-      "Prix du marché",
-      "Conseiller IA (limité)",
-    ],
-    cta: "Commencer gratuitement",
-    href: `${APP_URL}/register`,
-  },
-  {
-    name: "Pro",
-    price: "79",
-    unit: "TND / mois",
-    highlight: true,
-    features: [
-      "Scans IA illimités",
-      "Annonces illimitées",
-      "Conseiller IA complet",
-      "Accès prioritaire",
-      "Support WhatsApp",
-    ],
-    cta: "Choisir Pro",
-    href: `${APP_URL}/upgrade`,
-  },
-  {
-    name: "Coopérative",
-    price: "149",
-    unit: "TND / mois",
-    highlight: false,
-    features: [
-      "Multi-membres",
-      "Analytics avancés",
-      "Annonces groupées",
-      "Badge GICAT",
-      "Gestionnaire dédié",
-    ],
-    cta: "Contacter l'équipe",
-    href: `${APP_URL}/upgrade`,
-  },
-];
+  useEffect(() => {
+    const tick = () => {
+      const diff = Math.max(0, target - Date.now());
+      setTimeLeft({
+        d: Math.floor(diff / 86400000),
+        h: Math.floor((diff % 86400000) / 3600000),
+        m: Math.floor((diff % 3600000) / 60000),
+        s: Math.floor((diff % 60000) / 1000),
+      });
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
 
-/* ─── Navbar ─────────────────────────────────────────────────────────────── */
-function Navbar() {
-  return (
-    <header className="sticky top-0 z-50 bg-white shadow-sm">
-      <nav className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <a href="/" className="flex items-center gap-2 font-bold text-xl text-green-600">
-          <span>🌿</span>
-          <span>Fellah</span>
-        </a>
-
-        {/* CTA buttons */}
-        <div className="flex items-center gap-3">
-          <a
-            href={`${APP_URL}/login`}
-            className="hidden sm:inline-flex items-center px-4 py-2 text-sm font-medium text-green-600 border border-green-600 rounded-lg hover:bg-green-50 transition-colors"
-          >
-            Se connecter
-          </a>
-          <a
-            href={`${APP_URL}/register`}
-            className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors"
-          >
-            Commencer gratuitement
-          </a>
-        </div>
-      </nav>
-    </header>
-  );
-}
-
-/* ─── Hero ────────────────────────────────────────────────────────────────── */
-function Hero() {
-  return (
-    <section className="bg-green-50 py-20 px-4 text-center">
-      <div className="max-w-3xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 text-xs font-medium text-green-700 bg-green-100 rounded-full">
-          🇹🇳 Plateforme agri-tech #1 en Tunisie
-        </div>
-        <h1
-          className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4 leading-tight"
-          dir="rtl"
-          lang="ar"
-        >
-          فلاحتك أذكى مع الذكاء الاصطناعي
-        </h1>
-        <p className="text-lg sm:text-xl text-gray-600 mb-8 leading-relaxed">
-          La plateforme tout-en-un pour les agriculteurs tunisiens —<br className="hidden sm:block" />
-          prix en temps réel, diagnostic IA, marché direct.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a
-            href={`${APP_URL}/register`}
-            className="inline-flex items-center justify-center px-8 py-3 text-base font-semibold text-white bg-green-600 rounded-xl hover:bg-green-700 transition-colors shadow-md"
-          >
-            Commencer gratuitement →
-          </a>
-          <a
-            href="#features"
-            className="inline-flex items-center justify-center px-8 py-3 text-base font-semibold text-green-700 border-2 border-green-600 rounded-xl hover:bg-green-50 transition-colors"
-          >
-            Voir la démo
-          </a>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── Stats Bar ───────────────────────────────────────────────────────────── */
-function StatsBar() {
-  const stats = [
-    { value: "530 000", label: "agriculteurs en Tunisie" },
-    { value: "24", label: "gouvernorats couverts" },
-    { value: "3", label: "langues (AR / FR / EN)" },
-  ];
-  return (
-    <section className="bg-green-500 py-10 px-4">
-      <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 text-center text-white">
-        {stats.map((s) => (
-          <div key={s.label}>
-            <p className="text-3xl font-extrabold">{s.value}</p>
-            <p className="text-sm mt-1 opacity-90">{s.label}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-/* ─── Features ────────────────────────────────────────────────────────────── */
-function Features() {
-  return (
-    <section id="features" className="py-20 px-4 bg-white">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold text-center text-gray-900 mb-3">
-          Tout ce dont vous avez besoin
-        </h2>
-        <p className="text-center text-gray-500 mb-12">
-          Une seule application pour gérer, diagnostiquer, et vendre.
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {FEATURES.map((f) => (
-            <div
-              key={f.title}
-              className="p-6 rounded-2xl border border-gray-100 bg-gray-50 hover:shadow-md transition-shadow"
-            >
-              <div className="text-3xl mb-4">{f.icon}</div>
-              <h3 className="font-semibold text-gray-900 mb-2 text-base">{f.title}</h3>
-              <p className="text-sm text-gray-600 leading-relaxed">{f.desc}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── How It Works ────────────────────────────────────────────────────────── */
-function HowItWorks() {
-  return (
-    <section className="py-20 px-4 bg-green-50">
-      <div className="max-w-4xl mx-auto">
-        <h2 className="text-3xl font-bold text-center text-gray-900 mb-3">
-          Comment ça marche ?
-        </h2>
-        <p className="text-center text-gray-500 mb-12">Opérationnel en moins de 5 minutes.</p>
-        <div className="flex flex-col md:flex-row gap-8 relative">
-          {STEPS.map((step, i) => (
-            <div key={step.num} className="flex-1 flex flex-col items-center text-center relative">
-              {/* Connector line (desktop only) */}
-              {i < STEPS.length - 1 && (
-                <div className="hidden md:block absolute top-6 left-[calc(50%+2.5rem)] right-0 h-0.5 bg-green-300 z-0" />
-              )}
-              <div className="relative z-10 w-12 h-12 flex items-center justify-center rounded-full bg-green-600 text-white font-extrabold text-lg shadow mb-4">
-                {step.num}
-              </div>
-              <h3 className="font-semibold text-gray-900 mb-2">{step.title}</h3>
-              <p className="text-sm text-gray-600 leading-relaxed">{step.desc}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── Pricing ─────────────────────────────────────────────────────────────── */
-function Pricing() {
-  return (
-    <section id="pricing" className="py-20 px-4 bg-white">
-      <div className="max-w-5xl mx-auto">
-        <h2 className="text-3xl font-bold text-center text-gray-900 mb-3">Tarifs simples</h2>
-        <p className="text-center text-gray-500 mb-12">Sans frais cachés. Changez de plan à tout moment.</p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {PLANS.map((plan) => (
-            <div
-              key={plan.name}
-              className={`relative rounded-2xl p-8 border-2 flex flex-col ${
-                plan.highlight
-                  ? "border-green-500 shadow-xl scale-105"
-                  : "border-gray-100 shadow-sm"
-              }`}
-            >
-              {plan.highlight && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-green-500 text-white text-xs font-bold px-4 py-1 rounded-full">
-                  Populaire
-                </div>
-              )}
-              <h3 className="text-xl font-bold text-gray-900 mb-1">{plan.name}</h3>
-              <div className="flex items-end gap-1 mb-6">
-                <span className="text-4xl font-extrabold text-gray-900">{plan.price}</span>
-                <span className="text-sm text-gray-500 mb-1">{plan.unit}</span>
-              </div>
-              <ul className="flex-1 space-y-3 mb-8">
-                {plan.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-gray-700">
-                    <span className="text-green-500 mt-0.5">✓</span>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <a
-                href={plan.href}
-                className={`w-full text-center py-3 rounded-xl font-semibold text-sm transition-colors ${
-                  plan.highlight
-                    ? "bg-yellow-400 text-black hover:bg-yellow-300"
-                    : "bg-green-600 text-white hover:bg-green-700"
-                }`}
-              >
-                {plan.cta}
-              </a>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── Regions ─────────────────────────────────────────────────────────────── */
-function Regions() {
-  return (
-    <section className="py-16 px-4 bg-gray-50">
-      <div className="max-w-4xl mx-auto text-center">
-        <h2 className="text-2xl font-bold text-gray-900 mb-3">
-          Disponible dans tous les gouvernorats de Tunisie
-        </h2>
-        <p className="text-gray-500 mb-8 text-sm">De Bizerte à Kébili — chaque agriculteur tunisien est couvert.</p>
-        <div className="flex flex-wrap justify-center gap-2">
-          {REGIONS.map((r) => (
-            <span
-              key={r}
-              className="px-3 py-1.5 bg-white border border-green-200 text-green-700 text-sm rounded-full font-medium shadow-sm"
-            >
-              {r}
-            </span>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── CTA Banner ──────────────────────────────────────────────────────────── */
-function CTABanner() {
-  return (
-    <section className="py-20 px-4 bg-green-600 text-white text-center">
-      <div className="max-w-2xl mx-auto">
-        <h2 className="text-3xl sm:text-4xl font-extrabold mb-4 leading-tight">
-          Rejoignez les premiers agriculteurs tunisiens sur Fellah
-        </h2>
-        <p className="text-green-100 mb-8 text-lg">
-          Gratuit pour toujours. Pas de carte bancaire requise.
-        </p>
-        <a
-          href={`${APP_URL}/register`}
-          className="inline-flex items-center px-10 py-4 text-base font-bold bg-white text-green-700 rounded-xl hover:bg-green-50 transition-colors shadow-lg"
-        >
-          Commencer gratuitement →
-        </a>
-      </div>
-    </section>
-  );
-}
-
-/* ─── Footer ──────────────────────────────────────────────────────────────── */
-function Footer() {
-  return (
-    <footer className="bg-gray-900 text-gray-400 py-10 px-4">
-      <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-2 text-white font-bold text-lg">
-          <span>🌿</span>
-          <span>Fellah</span>
-        </div>
-        <p className="text-sm">© 2026 Fellah. Tous droits réservés.</p>
-        <nav className="flex flex-wrap gap-4 text-sm justify-center">
-          <a href="/privacy" className="hover:text-white transition-colors">
-            Politique de confidentialité
-          </a>
-          <a href="/terms" className="hover:text-white transition-colors">
-            Conditions d&apos;utilisation
-          </a>
-          <a
-            href="https://wa.me/21600000000"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-white transition-colors"
-          >
-            Contact WhatsApp
-          </a>
-        </nav>
-      </div>
-    </footer>
-  );
-}
-
-/* ─── Page ────────────────────────────────────────────────────────────────── */
-export default function LandingPage() {
   return (
     <>
-      <Navbar />
-      <main>
-        <Hero />
-        <StatsBar />
-        <Features />
-        <HowItWorks />
-        <Pricing />
-        <Regions />
-        <CTABanner />
+      <Script
+        src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"
+        strategy="beforeInteractive"
+      />
+      <main style={{
+        minHeight: "100dvh",
+        background: "linear-gradient(135deg, #0a1f0a 0%, #0f2d0f 40%, #1a3a1a 100%)",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "24px 20px",
+        fontFamily: "'Segoe UI', system-ui, sans-serif",
+        color: "#ffffff",
+        position: "relative",
+        overflow: "hidden",
+      }}>
+        {/* Background grain texture */}
+        <div style={{
+          position: "fixed", inset: 0, opacity: 0.03,
+          backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E\")",
+          pointerEvents: "none",
+        }} />
+
+        {/* Logo */}
+        <div style={{ textAlign: "center", marginBottom: 8 }}>
+          <span style={{ fontSize: 20, letterSpacing: 3, color: "#22c55e", fontWeight: 700, textTransform: "uppercase" }}>
+            🌾 فلاح · FELLAH
+          </span>
+        </div>
+
+        {/* Lottie animation */}
+        <div style={{ width: 280, height: 280, margin: "0 auto" }}>
+          {/* @ts-expect-error lottie-player is web component */}
+          <lottie-player
+            src="https://lottie.host/9a4c9c0c-3a8e-4c0e-9b7a-5e8c7f3d2e1a/placeholder.json"
+            background="transparent"
+            speed="1"
+            loop
+            autoplay
+            style={{ width: "100%", height: "100%" }}
+          />
+          {/* Fallback emoji if lottie fails */}
+          <div style={{
+            fontSize: 80,
+            textAlign: "center",
+            animation: "float 3s ease-in-out infinite",
+          }}>
+            🚀
+          </div>
+        </div>
+
+        {/* Main heading */}
+        <h1 style={{
+          fontSize: "clamp(32px, 6vw, 56px)",
+          fontWeight: 800,
+          textAlign: "center",
+          margin: "8px 0 4px",
+          background: "linear-gradient(90deg, #22c55e, #86efac, #FDD835)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          lineHeight: 1.1,
+        }}>
+          قريباً
+        </h1>
+        <h2 style={{
+          fontSize: "clamp(20px, 4vw, 32px)",
+          fontWeight: 700,
+          textAlign: "center",
+          color: "#86efac",
+          margin: "0 0 8px",
+        }}>
+          Coming Soon
+        </h2>
+        <p style={{
+          color: "#9ca3af",
+          textAlign: "center",
+          fontSize: "clamp(14px, 2vw, 17px)",
+          maxWidth: 480,
+          lineHeight: 1.7,
+          margin: "0 0 32px",
+        }}>
+          La plateforme agricole intelligente pour les agriculteurs tunisiens.<br />
+          Marketplace, prix du marché, et conseiller IA — tout en un.
+        </p>
+
+        {/* Countdown */}
+        <div style={{
+          display: "flex", gap: 16, marginBottom: 36,
+          background: "rgba(34,197,94,0.08)",
+          border: "1px solid rgba(34,197,94,0.2)",
+          borderRadius: 16, padding: "20px 28px",
+        }}>
+          {[
+            { val: timeLeft.d, label: "Jours" },
+            { val: timeLeft.h, label: "Heures" },
+            { val: timeLeft.m, label: "Minutes" },
+            { val: timeLeft.s, label: "Secondes" },
+          ].map(({ val, label }, i) => (
+            <div key={i} style={{ textAlign: "center", minWidth: 52 }}>
+              <div style={{
+                fontSize: "clamp(24px, 5vw, 40px)",
+                fontWeight: 800,
+                color: "#22c55e",
+                lineHeight: 1,
+                fontVariantNumeric: "tabular-nums",
+              }}>
+                {String(val).padStart(2, "0")}
+              </div>
+              <div style={{ fontSize: 11, color: "#6b7280", marginTop: 4, textTransform: "uppercase", letterSpacing: 1 }}>
+                {label}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Email capture */}
+        {!submitted ? (
+          <form
+            onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }}
+            style={{ display: "flex", gap: 8, width: "100%", maxWidth: 420, marginBottom: 32 }}
+          >
+            <input
+              type="email"
+              required
+              placeholder="votre@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={{
+                flex: 1, padding: "12px 16px",
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.15)",
+                borderRadius: 10, color: "#fff", fontSize: 15,
+                outline: "none",
+              }}
+            />
+            <button type="submit" style={{
+              padding: "12px 20px",
+              background: "#22c55e", color: "#fff",
+              border: "none", borderRadius: 10,
+              fontWeight: 700, fontSize: 14,
+              cursor: "pointer", whiteSpace: "nowrap",
+            }}>
+              Notifie-moi
+            </button>
+          </form>
+        ) : (
+          <div style={{
+            marginBottom: 32, padding: "12px 24px",
+            background: "rgba(34,197,94,0.15)",
+            border: "1px solid rgba(34,197,94,0.3)",
+            borderRadius: 10, color: "#86efac", fontSize: 14,
+          }}>
+            ✅ Parfait ! On vous préviendra au lancement.
+          </div>
+        )}
+
+        {/* Already have account */}
+        <a href="https://app.fellah.tn" style={{
+          color: "#6b7280", fontSize: 13, textDecoration: "none",
+          borderBottom: "1px solid transparent",
+          transition: "color 0.2s, border-color 0.2s",
+        }}
+          onMouseEnter={e => { (e.target as HTMLAnchorElement).style.color = "#22c55e"; }}
+          onMouseLeave={e => { (e.target as HTMLAnchorElement).style.color = "#6b7280"; }}
+        >
+          Déjà un compte ? Accéder à l'application →
+        </a>
+
+        {/* Footer */}
+        <div style={{
+          position: "absolute", bottom: 20,
+          display: "flex", gap: 20, fontSize: 12, color: "#374151",
+        }}>
+          <a href="https://app.fellah.tn/privacy" style={{ color: "#374151", textDecoration: "none" }}>Confidentialité</a>
+          <span>·</span>
+          <a href="mailto:contact@fellah.tn" style={{ color: "#374151", textDecoration: "none" }}>contact@fellah.tn</a>
+          <span>·</span>
+          <span>© 2026 Fellah</span>
+        </div>
+
+        <style>{`
+          @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-16px); }
+          }
+          lottie-player ~ div { display: none; }
+          lottie-player:not([shadowroot]) ~ div { display: block; }
+        `}</style>
       </main>
-      <Footer />
     </>
   );
 }

@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Fellah — المنصة الذكية للفلاحين التونسيين",
+  title: "Fellah — قريباً · Coming Soon",
   description:
-    "Gérez votre ferme, diagnostiquez vos cultures avec l'IA, consultez les prix du marché et vendez directement aux acheteurs. La plateforme agri-tech #1 en Tunisie.",
+    "La plateforme agri-tech intelligente pour les agriculteurs tunisiens. Marketplace, prix du marché, et conseiller IA. Lancement imminent.",
   metadataBase: new URL("https://fellah.tn"),
   openGraph: {
     title: "Fellah — المنصة الذكية للفلاحين التونسيين",
